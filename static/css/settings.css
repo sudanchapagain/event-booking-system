@@ -1,0 +1,105 @@
+.settings-main-container {
+  max-width: 550px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.settings-main-container h1 {
+  font-size: 2.3rem;
+  margin-top: 50px;
+}
+
+.settings-form {
+  border: 1px solid lightgrey;
+  border-radius: 8px;
+  padding: 30px;
+  background-color: #fafafa;
+}
+
+.success-message {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.subtitle-profile-detail {
+    font-size: 1rem;
+    margin-top: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: grey;
+}
+
+.data-item-profile-detail {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+    text-transform: initial;
+    border: 1px solid lightgrey;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f0f0f0;
+}
+
+.settings-input {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+    border: 1px solid lightgrey;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f0f0f0;
+    font-family: inherit;
+}
+
+.settings-input:focus {
+    border-color: #ff4a22;
+    outline: none;
+}
+
+.edit-button-profile {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    background-color: #ff4a22;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    margin-top: 1rem;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.delete-button-profile {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    color: red;
+    border: none;
+    border-radius: 6px;
+    margin-top: 1rem;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+form {
+    margin-bottom: 2rem;
+}

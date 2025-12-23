@@ -1,0 +1,59 @@
+.page-content {
+    max-width: 750px;
+    margin: 0 auto;
+    padding: 2rem 32px;
+}
+
+.page-content h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.page-content h2 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-content p,
+.page-content li {
+    line-height: 1.7;
+    color: #525252;
+    margin: 0.5rem 0;
+}
+
+.page-content ul,
+.page-content ol {
+    padding-left: 1.5rem;
+}
+
+.page-content ul li {
+    list-style: disc;
+    margin-bottom: 0.5rem;
+}
+
+.page-content ol li {
+    list-style: decimal;
+    margin-bottom: 0.5rem;
+}
+
+.page-content a {
+    color: #ff4a22;
+}
+
+.page-content a:hover {
+    text-decoration: underline;
+}
+
+.about-us-extended-logo {
+    max-width: 750px;
+    margin: 30px auto;
+    overflow: hidden;
+}
+
+.about-us-extended-logo>img {
+    width: 80%;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+}
