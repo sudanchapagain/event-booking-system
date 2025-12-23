@@ -1,0 +1,29 @@
+[project]
+name = "chautari"
+version = "0.1.0"
+description = "Event booking platform"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "Django>=5.1",
+    "django-cors-headers>=4.3",
+    "psycopg2-binary>=2.9",
+    "python-dotenv>=1.0",
+    "whitenoise>=6.0",
+    "django-unfold>=0.44",
+    "requests>=2.32.5",
+    "django-environ>=0.11",
+    "pillow>=10.0",
+    "scikit-learn>=1.5",
+    "numpy>=1.26",
+    "boto3>=1.35",
+    "django-storages>=1.14",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-django>=4.8",
+    "factory-boy>=3.3",
+    "pytest-cov>=4.1",
+]
