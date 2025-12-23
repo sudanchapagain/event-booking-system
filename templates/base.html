@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block title %}
+                Chautari
+            {% endblock title %}
+        </title>
+        <meta name="description"
+              content="{% block description %}
+                           Discover events with Chautari
+                       {% endblock description %}">
+        <link rel="stylesheet" href="{% static 'css/default.css' %}">
+        <link rel="stylesheet" href="{% static 'css/header.css' %}">
+        <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+        {% block extra_css %}
+        {% endblock extra_css %}
+    </head>
+    <body>
+        {% include "components/header.html" %}
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags|default:'info' }}">
+                        <span>{{ message }}</span>
+                        <button class="message-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endfor %}
+            </div>
+            <script>
+                // dismiss after 5sec
+                setTimeout(function() {
+                    var messages = document.querySelectorAll('.message');
+                    messages.forEach(function(msg) {
+                        msg.style.opacity = '0';
+                        setTimeout(function() {
+                            msg.remove();
+                        }, 300);
+                    });
+                }, 5000);
+            </script>
+        {% endif %}
+        {% block content %}
+        {% endblock content %}
+        {% include "components/footer.html" %}
+        {% block extra_js %}
+            <script src="{% static 'js/profile-icon-loader.js' %}" defer></script>
+            <script src="{% static 'js/hamburger.js' %}" defer></script>
+        {% endblock extra_js %}
+    </body>
+</html>
