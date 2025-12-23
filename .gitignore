@@ -1,3 +1,13 @@
-src/config/credentials.php
-public/uploads
-public/docs
+# python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# virtual environments
+.venv
+
+# django static assets
+staticfiles
