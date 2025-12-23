@@ -40,10 +40,9 @@ a {
 }
 
 ul {
-  list-style: none;
+    list-style: none;
 }
 
-/* Flash Messages */
 .messages-container {
   max-width: 78rem;
   margin: 0 auto;
