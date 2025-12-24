@@ -1,18 +1,35 @@
-<?php include __DIR__ . '/../components/header.php'; ?>
+{% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+    <style>
+        .page-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 32px 4rem;
+        }
 
-<head>
-    <title>Data Protection Agreement - Chautari</title>
+        .page-content h1 {
+            font-size: 2.5rem;
+            margin: 50px 0 30px;
+        }
 
-    <link rel="stylesheet" href="../assets/css/default.css">
-    <link rel="stylesheet" href="../assets/css/index.css">
-    <link rel="stylesheet" href="../assets/css/dpa.css">
-</head>
+        .page-content h2 {
+            margin-top: 2rem;
+        }
 
-<body>
-    <main>
+        .page-content ul,
+        .page-content ol {
+            margin-left: 1.5rem;
+        }
 
-        <h1>Data Protection Agreement</h1>
-
+        .page-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+{% endblock extra_css %}
+{% block content %}
+    <main class="page-content">
+        <h1>Data Processing Agreement</h1>
         <div class="boxed-text">
 
             <h2>1. Information Collection and Usage</h2>
@@ -56,7 +73,6 @@
                 <a href="mailto:support@chautari.com">support@chautari.com</a>.
             </p>
         </div>
-    </main>
-</body>
 
-<?php include __DIR__ . '/../components/footer.php'; ?>
+    </main>
+{% endblock content %}
