@@ -133,13 +133,6 @@
     border: 1px solid #bfdbfe;
 }
 
-.highlight-box {
-    background: #fef3c7;
-    padding: 1rem;
-    border-radius: 8px;
-    margin: 1rem 0;
-}
-
 .danger-box {
     background: #fee2e2;
     padding: 1rem;
