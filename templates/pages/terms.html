@@ -16,6 +16,10 @@
         .page-content h2 {
             margin-top: 2rem;
         }
+
+        a {
+            color: #ff4a22;
+        }
     </style>
 {% endblock extra_css %}
 {% block content %}
@@ -86,7 +90,7 @@
             <b>Data Protection and Privacy</b>
             <br>
             <p>
-                Your privacy is important to us. Please review our <a href="/dpa">Data Protection Agreement</a> to understand how we collect, use, and protect your personal
+                Your privacy is important to us. Please review our <a href="{% url 'dpa' %}">Data Protection Agreement</a> to understand how we collect, use, and protect your personal
                 information. By using Chautari, you consent to our data practices as described in the DPA.
             </p>
 

@@ -1,113 +1,160 @@
-<?php
-if (isset($_SESSION['user_id'])) {
-    header('Location: /explore');
-    exit;
-}
-?>
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+    <style>
+        .centerBody {
+            display: flex;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-<!DOCTYPE html>
-<html lang="en">
+        .formCenter {
+            width: 500px;
+            margin: -10px auto 0 auto;
+            padding: 0 20px;
+        }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign up - Chautari</title>
-    <meta name="description" content="Struggling to discover fun and exciting events near you? Chautari brings the best local events tailored to you so you can join
-            local happenings with ease.">
-    <meta property="og:title" content="Chautari — Find out about events around you.">
-    <link rel="icon" type="image/x-icon" href="../assets/images/favicon.ico" sizes="any">
+        .formbody h1 {
+            font-size: 1.5rem;
+            line-height: 1.5;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
 
-    <link rel="stylesheet" href="../assets/css/default.css">
-    <link rel="stylesheet" href="../assets/css/sign.css">
-</head>
+        .formbody form label {
+            display: block;
+            margin-top: 1.1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
 
-<body class="centerBody">
+        .formbody form input {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: #e5e5e5 1px solid;
+            background-color: #fafafa;
+            font-family: inherit;
+            font-size: 1rem;
+        }
 
-    <main class="formCenter">
+        .formbody form input:focus {
+            border-color: #ff4a22;
+            outline: none;
+        }
 
-        <?php if (isset($_GET['signup_error']) && $_GET['signup_error'] == 'wrong_email_format'): ?>
-            <p class="signupFailMessage">Invalid Email format.</p>
-        <?php endif; ?>
+        .formbody form button {
+            font-family: inherit;
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0 10px 0;
+            background-color: #000;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
 
-        <?php if (isset($_GET['signup_error']) && $_GET['signup_error'] == 'username_taken'): ?>
-            <p class="signupFailMessage">Username already taken. Please choose another one.</p>
-        <?php endif; ?>
+        .formbody form button:hover {
+            background-color: #333;
+        }
 
-        <?php if (isset($_GET['signup_error']) && $_GET['signup_error'] == 'wrong_username_format'): ?>
-            <p class="signupFailMessage">Username must be at least 3 characters long and unique.</p>
-        <?php endif; ?>
+        .snippetSignInfo {
+            font-size: 0.85rem;
+            line-height: 1.3;
+            color: #737373;
+            margin-top: 1rem;
+        }
 
-        <?php if (isset($_GET['signup_error']) && $_GET['signup_error'] == 'wrong_password_length'): ?>
-            <p class="signupFailMessage">Password must be at least 8 characters long.</p>
-        <?php endif; ?>
+        .snippetSignInfo a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
 
-        <?php if (isset($_GET['signup_error']) && $_GET['signup_error'] == 'wrong_phone_format'): ?>
-            <p class="signupFailMessage">Phone number must start with 98 or 97 and be exactly 10 digits long.</p>
-        <?php endif; ?>
+        .snippetSignInfo a:hover {
+            text-decoration: underline;
+        }
 
-        <?php if (isset($_GET['signup_error']) && $_GET['signup_error'] == 'duplicate_phone'): ?>
-            <p class="signupFailMessage">Sign up with another phone number.</p>
-        <?php endif; ?>
+        .signupFailMessage {
+            color: #ff4d4d;
+            font-weight: 500;
+            margin-bottom: 30px;
+        }
 
-        <?php if (isset($_GET['signup_error']) && $_GET['signup_error'] == 'generic'): ?>
-            <p class="signupFailMessage">Sorry, something went wrong. Please try again later.</p>
-        <?php endif; ?>
+        .errorlist {
+            list-style: none;
+            color: #ff4d4d;
+            font-size: 0.85rem;
+            margin: 5px 0;
+        }
+    </style>
+{% endblock extra_css %}
+{% block content %}
+    <div class="centerBody">
+        <div class="formCenter">
+            <div class="formbody">
+                <h1>Sign up</h1>
 
-        <?php if (isset($_GET['signup_error']) && $_GET['signup_error'] == 'email_fail'): ?>
-            <p class="signupFailMessage">Please use a different email.</p>
-        <?php endif; ?>
-
-        <a href="/" target="_self"><img class="smallImageInForm" src="../assets/images/logo-32.svg" alt="" srcset=""></a>
-
-        <h1>Sign up</h1>
-
-        <p class="snippetSignInfo">Already have an account? <a href="./login">Log in</a></p>
-
-        <div class="formbody">
-            <form action="/signup" method="post" onsubmit="return validateForm()">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required inputmode="text">
-                <span id="usernameError" class="error"></span>
-
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required inputmode="email">
-                <span id="emailError" class="error"></span>
-
-                <label for="phone_number">Phone Number</label>
-                <input type="text" id="phone_number" name="phone_number" required pattern="^(98|97)\d{8}$" maxlength="10" inputmode="numeric">
-                <span id="phoneNumberError" class="error"></span>
-
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required inputmode="password">
-                <span id="passwordError" class="error"></span>
-
-                <span id="passNoMatch"></span>
-                <style>
-                    #passNoMatch,
-                    .error {
-                        color: #d42f2f;
-                    }
-                </style>
-
-                <p class="snippetSignInfo"><small><b>Note:</b><br>
-                        If you forget your login credentials, we cannot recover or reset them. Please store them
-                        securely.</small></p>
-
-                <br>
-                <button type="submit">Sign up</button>
-                <br>
-
-                <p class="snippetSignInfo"><small>By using this service, you agree to our <a href="/privacy">Privacy
-                            Policy</a>,
-                        <a href="/terms">Terms and Conditions</a>, and <a href="/dpa">Data Protection
-                            Agreement</a>, which outline how we handle your data and the rules governing usage.</small>
+                <p class="snippetSignInfo">
+                    Already have an account? <a href="{% url 'login' %}">Log in</a>
                 </p>
 
-            </form>
+                {% if form.non_field_errors %}
+                    <div class="signupFailMessage">
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <label for="id_name">Name</label>
+                    <input type="text"
+                           name="name"
+                           id="id_name"
+                           required
+                           value="{{ form.name.value|default:'' }}" />
+                    {% if form.name.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.name.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <label for="id_email">Email</label>
+                    <input type="email"
+                           name="email"
+                           id="id_email"
+                           required
+                           value="{{ form.email.value|default:'' }}" />
+                    {% if form.email.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <label for="id_password1">Password</label>
+                    <input type="password" name="password1" id="id_password1" required />
+                    {% if form.password1.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.password1.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <button type="submit">Sign up</button>
+                </form>
+
+                <p class="snippetSignInfo">
+                    <small>
+                        By using this service, you agree to our <a href="/privacy">Privacy Policy</a>,
+                        <a href="/terms">Terms and Conditions</a>, and <a href="/dpa">Data Protection Agreement</a>, which outline how we handle your data and the rules governing usage.
+                    </small>
+                </p>
+            </div>
         </div>
-    </main>
-
-    <script src="../assets/js/signup_validation.js"></script>
-</body>
-
-</html>
+    </div>
+{% endblock content %}
