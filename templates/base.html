@@ -13,14 +13,15 @@
               content="{% block description %}
                            Discover events with Chautari
                        {% endblock description %}">
+
         <link rel="stylesheet" href="{% static 'css/default.css' %}">
-        <link rel="stylesheet" href="{% static 'css/header.css' %}">
-        <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+        <link rel="stylesheet" href="{% static 'css/components.css' %}">
         {% block extra_css %}
         {% endblock extra_css %}
     </head>
     <body>
         {% include "components/header.html" %}
+
         {% if messages %}
             <div class="messages-container">
                 {% for message in messages %}
@@ -43,12 +44,13 @@
                 }, 5000);
             </script>
         {% endif %}
+
         {% block content %}
         {% endblock content %}
+
         {% include "components/footer.html" %}
+
         {% block extra_js %}
-            <script src="{% static 'js/profile-icon-loader.js' %}" defer></script>
-            <script src="{% static 'js/hamburger.js' %}" defer></script>
         {% endblock extra_js %}
     </body>
 </html>
