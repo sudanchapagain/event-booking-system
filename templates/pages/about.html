@@ -1,32 +1,31 @@
-<?php include __DIR__ . '/../components/header.php'; ?>
-
-<head>
-    <title>About - Chautari</title>
-
-    <link rel="stylesheet" href="../assets/css/default.css">
-    <link rel="stylesheet" href="../assets/css/index.css">
-    <link rel="stylesheet" href="../assets/css/about.css">
-
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
     <style>
-        nav ul li:nth-child(2) a {
-            background-color: #f0f0f0;
-            padding: 8px 15px;
-            border-radius: 20px;
+        .page-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 32px 4rem;
+        }
+
+        .page-content h1 {
+            font-size: 2.5rem;
+            margin: 50px 0 30px;
+        }
+
+        .about-us-extended-logo img {
+            max-width: 280px;
+            margin-bottom: 1.5rem;
         }
     </style>
-</head>
-
-<body>
-    <main>
-
+{% endblock extra_css %}
+{% block content %}
+    <main class="page-content">
         <h1>About</h1>
-
         <div class="boxed-text">
-
             <div class="about-us-extended-logo">
-                <img src="../assets/images/extended-logo.png" alt="extended logo">
+                <img src="{% static 'images/extended-logo.png' %}" alt="extended logo">
             </div>
-
             <p>
                 Sano Chautari Software Company Limited has crafted a specialized software solution called Chautari,
                 tailored to revolutionize how events are discovered and accessed. Chautari stands out as a unique
@@ -35,9 +34,7 @@
                 Chautari ensures that both event organizers and attendees find the perfect match, enhancing the overall
                 event experience.
             </p>
-
             <br>
-
             <p>
                 The software is designed to simplify the search and discovery phase, making it easier for users to
                 navigate through various events without being overwhelmed by irrelevant options. Chautari employs
@@ -46,9 +43,7 @@
                 Chautari offers a platform to reach a more targeted audience, thereby increasing the likelihood of
                 attracting genuinely interested participants.
             </p>
-
             <br>
-
             <p>
                 What sets Chautari apart is its focus on the discovery process within the broader event management
                 spectrum. While many event management tools offer features like ticketing, scheduling, and more,
@@ -59,6 +54,4 @@
             </p>
         </div>
     </main>
-</body>
-
-<?php include __DIR__ . '/../components/footer.php'; ?>
+{% endblock content %}
