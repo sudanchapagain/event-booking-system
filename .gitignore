@@ -11,7 +11,37 @@ wheels/
 
 # django static assets
 staticfiles
+media/
 
 db.sqlite3
 .env
 *.env
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.vscode/
+.idea/
+coverage
+html
+cov/
+.tox/
+.nox/
+.ipynb_checkpoints
+celerybeat-schedule
+instance/
+.webassets-cache/
+.scrapy/
+.pyre/
+.pytype/
+coverage.xml
+nosetests.xml
+test-reports/
+junit.xml
+.prof
+*.log
+*.pot
+*.mo
+*.sqlite3
+.DS_Store
+Thumbs.db
+*.swp
