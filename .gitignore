@@ -45,3 +45,4 @@ junit.xml
 .DS_Store
 Thumbs.db
 *.swp
+.env
