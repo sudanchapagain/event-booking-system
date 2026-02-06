@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 {% block extra_css %}
     <style>
@@ -137,8 +137,21 @@
                         </ul>
                     {% endif %}
 
+                    <label for="id_phone">Phone</label>
+                    <input type="text"
+                           name="phone"
+                           id="id_phone"
+                           maxlength="10"
+                           required
+                           value="{{ form.phone.value|default:'' }}" />
+                    {% if form.phone.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.phone.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+
                     <label for="id_password1">Password</label>
-                    <input type="password" name="password1" id="id_password1" required />
+                    <input type="password" name="password" id="id_password" required />
                     {% if form.password1.errors %}
                         <ul class="errorlist">
                             {% for error in form.password1.errors %}<li>{{ error }}</li>{% endfor %}
@@ -150,8 +163,9 @@
 
                 <p class="snippetSignInfo">
                     <small>
-                        By using this service, you agree to our <a href="/privacy">Privacy Policy</a>,
-                        <a href="/terms">Terms and Conditions</a>, and <a href="/dpa">Data Protection Agreement</a>, which outline how we handle your data and the rules governing usage.
+                        By using this service, you agree to our <a href="{% url "privacy" %}">Privacy Policy</a>,
+                        <a href="{% url "terms" %}">Terms and Conditions</a>, and <a href="{% url "dpa" %}">Data Protection Agreement</a>,
+                        which outline how we handle your data and the rules governing usage.
                     </small>
                 </p>
             </div>
