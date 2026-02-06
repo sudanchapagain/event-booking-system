@@ -1,43 +1,179 @@
-<head>
-    <title>Settings - Chautari</title>
-    <link rel="stylesheet" href="../assets/css/default.css">
-    <link rel="stylesheet" href="../assets/css/index.css">
-    <link rel="stylesheet" href="../assets/css/sign.css">
-    <link rel="stylesheet" href="../assets/css/settings.css">
-</head>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Settings - Chautari
+{% endblock title %}
+{% block extra_css %}
+    <style>
+        .settings-main-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
 
-<body>
-    <main style="max-width: 550px; margin: 0 auto;">
-        <h1 style="font-size: 2.3rem; margin-top: 50px;">Settings</h1>
+        .settings-main-container h1 {
+            font-size: 2.3rem;
+            margin-top: 50px;
+            margin-bottom: 10px;
+            color: #333;
+        }
 
-        <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
-            <p class="signupSuccessMessage">Profile updated successfully!</p>
-        <?php elseif (!empty($errors)): ?>
-            <div class="signupFailMessage">
-                <?php foreach ($errors as $error): ?>
-                    <p><?= escape($error) ?></p>
-                <?php endforeach; ?>
+        .settings-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .settings-form {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 4rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group:last-of-type {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 1rem;
+            color: #333;
+            background-color: #fafafa;
+            box-sizing: border-box;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff4a22;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255, 74, 34, 0.1);
+        }
+
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #ff4a22;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .submit-button:hover {
+            background-color: #e63a12;
+            transform: translateY(-1px);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .error-message p {
+            margin: 6px 0;
+        }
+
+        .error-message p:first-child {
+            margin-top: 0;
+        }
+
+        .error-message p:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock extra_css %}
+{% block content %}
+    <main class="settings-main-container">
+        <h1>Settings</h1>
+        <p class="settings-subtitle">Update your account information</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <p class="success-message">✓ {{ message }}</p>
+                {% elif message.tags == 'error' %}
+                    <div class="error-message">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if form.errors %}
+            <div class="error-message">
+                {% for field in form %}
+                    {% for error in field.errors %}<p>{{ error }}</p>{% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
             </div>
-        <?php endif; ?>
+        {% endif %}
 
-        <form method="POST" action="/settings" style="border: 1px solid lightgrey; border-radius: 8px; padding: 30px; background-color: #fafafa;">
-            <label for="username" class="subtitle-profile-detail">Username</label>
-            <input type="text" id="username" name="username" class="data-item-profile-detail"
-                value="<?= escape($user['username']) ?>" required style="width: 100%;" />
+        <form method="post" action="{% url 'settings' %}" class="settings-form">
+            {% csrf_token %}
 
-            <label for="user_phone" class="subtitle-profile-detail">Phone Number</label>
-            <input type="text" id="user_phone" name="user_phone" class="data-item-profile-detail"
-                value="<?= escape($user['user_phone']) ?>" style="width: 100%;" />
+            <div class="form-group">
+                <label for="id_first_name">Name</label>
+                <input type="text"
+                       id="id_first_name"
+                       name="first_name"
+                       value="{{ form.first_name.value|default:user.first_name }}"
+                       placeholder="Your display name"
+                       required />
+            </div>
 
-            <label for="email" class="subtitle-profile-detail">Email</label>
-            <input type="email" id="email" name="email" class="data-item-profile-detail"
-                value="<?= escape($user['email']) ?>" required style="width: 100%;" />
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                <input type="email"
+                       id="id_email"
+                       name="email"
+                       value="{{ form.email.value|default:user.email }}"
+                       placeholder="your@email.com"
+                       required />
+            </div>
 
-            <label for="password" class="subtitle-profile-detail">Password</label>
-            <input type="password" id="password" name="password" class="data-item-profile-detail"
-                style="width: 100%;" placeholder="Leave blank to keep current password" />
-
-            <button type="submit" class="edit-button-profile">Save Changes</button>
+            <button type="submit" class="submit-button">Save Changes</button>
         </form>
     </main>
-</body>
+{% endblock content %}
