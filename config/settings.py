@@ -95,7 +95,7 @@ if DEMO:
                 "ENGINE": "django.db.backends.postgresql",
                 "NAME": env("PG_NAME", default="chautari"),
                 "USER": env("PG_USER", default="postgres"),
-                "PASSWORD": env("PG_PASSWORD", default=""),
+                "PASSWORD": env("PG_PASSWORD", default="postgres"),
                 "HOST": env("PG_HOST", default="localhost"),
                 "PORT": env("PG_PORT", default=5432),
                 "ATOMIC_REQUESTS": True,
@@ -109,7 +109,9 @@ else:
         )
     _pg = urlparse(_env_database_url)
     if not _pg.path:
-        raise ImproperlyConfigured("DATABASE_URL is invalid or missing a database name.")
+        raise ImproperlyConfigured(
+            "DATABASE_URL is invalid or missing a database name."
+        )
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
