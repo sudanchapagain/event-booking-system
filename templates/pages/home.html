@@ -51,24 +51,9 @@
             margin-left: 4px;
         }
 
-        .advert-video-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 90%;
-            margin: 40px auto;
-        }
-
-        .advert-video {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 12px;
-        }
-
         .video-preview-container {
             position: relative;
-            margin: 0 auto 3rem;
+            margin: 3rem auto;
             width: 100%;
             max-width: 72rem;
             aspect-ratio: 16 / 9;
@@ -159,12 +144,6 @@
                 </span>
             </a>
             <a class="secondary-button" href="{% url 'about' %}">Learn more</a>
-        </div>
-        <div class="advert-video-wrapper">
-            <img class="advert-video"
-                 src="{% static 'images/placeholder-video.svg' %}"
-                 alt="video showcasing the product"
-                 onerror="this.style.display='none'">
         </div>
         <div class="video-preview-container">
             <div class="video-preview-inner">
