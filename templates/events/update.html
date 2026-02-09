@@ -1,0 +1,603 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+    <style>
+        .form-page {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem 32px 4rem;
+        }
+
+        .form-page h1 {
+            margin-top: 0;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        .form-group label .required {
+            color: #ff4a22;
+            margin-left: 2px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #ff4a22;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 74, 34, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group .helptext {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .form-group .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 6px 0 0 0;
+        }
+
+        .form-group .errorlist li {
+            color: #dc3545;
+            font-size: 0.85rem;
+            padding: 4px 0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+
+        .category-item:hover {
+            border-color: #ff4a22;
+            background: #fff;
+        }
+
+        .category-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            accent-color: #ff4a22;
+        }
+
+        .category-item label {
+            margin: 0;
+            font-weight: 400;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            background: #fafafa;
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .image-upload-area:hover {
+            border-color: #ff4a22;
+            background: #fff;
+        }
+
+        .image-upload-area.has-file {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+
+        .image-upload-area input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-label {
+            display: block;
+            color: #666;
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+
+        .upload-label svg {
+            display: block;
+            margin: 0 auto 0.5rem;
+        }
+
+        .upload-label .file-name {
+            color: #28a745;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            word-break: break-all;
+        }
+
+        .current-image {
+            font-size: 0.85rem;
+            color: #155724;
+            margin-bottom: 0.75rem;
+            padding: 8px 12px;
+            background: #d4edda;
+            border-radius: 6px;
+        }
+
+        .form-actions {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-submit {
+            padding: 14px 32px;
+            font-size: 1rem;
+            border-radius: 8px;
+            background-color: #ff4a22;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #e63e1a;
+        }
+
+        .btn-back {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-back:hover {
+            color: #333;
+        }
+
+        .form-errors {
+            background: #fff5f5;
+            border: 1px solid #ffcdd2;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-errors ul {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .form-errors li {
+            color: #dc3545;
+            font-size: 0.9rem;
+        }
+    </style>
+{% endblock extra_css %}
+{% block content %}
+    <div class="form-page">
+        <h1>Edit Event</h1>
+        <p class="form-subtitle">Update your event details below.</p>
+
+        {% if form.non_field_errors %}
+            <div class="form-errors">
+                <ul>
+                    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-section">
+                <h2 class="form-section-title">Basic Information</h2>
+
+                <div class="form-group">
+                    <label for="id_title">
+                        Event Title <span class="required">*</span>
+                    </label>
+                    <input type="text"
+                           name="title"
+                           id="id_title"
+                           value="{{ form.title.value|default:'' }}"
+                           required>
+                    {% if form.title.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.title.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_description">Description</label>
+                    <textarea name="description" id="id_description">{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.description.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_location">
+                        Location <span class="required">*</span>
+                    </label>
+                    <input type="text"
+                           name="location"
+                           id="id_location"
+                           value="{{ form.location.value|default:'' }}"
+                           required>
+                    {% if form.location.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.location.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="form-section-title">Tickets & Capacity</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_ticket_price">Ticket Price (Rs.)</label>
+                        <input type="number"
+                               name="ticket_price"
+                               id="id_ticket_price"
+                               value="{{ form.ticket_price.value|default:'0' }}"
+                               min="0"
+                               step="0.01">
+                        <span class="helptext">Set to 0 for free events</span>
+                        {% if form.ticket_price.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.ticket_price.errors %}<li>{{ error }}</li>{% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_capacity">Capacity</label>
+                        <input type="number"
+                               name="capacity"
+                               id="id_capacity"
+                               value="{{ form.capacity.value|default:'0' }}"
+                               min="0">
+                        <span class="helptext">0 = unlimited</span>
+                        {% if form.capacity.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.capacity.errors %}<li>{{ error }}</li>{% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="form-section-title">Categories</h2>
+                <div class="form-group">
+                    <div class="category-grid">
+                        {% for checkbox in form.categories %}
+                            <div class="category-item">
+                                {{ checkbox.tag }}
+                                <label for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                            </div>
+                        {% empty %}
+                            <p style="color: #666; font-size: 0.9rem;">No categories available yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_new_categories">Add New Categories</label>
+                    <input type="text"
+                           name="new_categories"
+                           id="id_new_categories"
+                           value="{{ form.new_categories.value|default:'' }}"
+                           placeholder="e.g. Workshop, Networking, Tech Talk">
+                    <span class="helptext">Enter new category names separated by commas</span>
+                    {% if form.new_categories.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.new_categories.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="form-section-title">Date & Time</h2>
+                {% if event_is_past %}
+                    <div class="pending-banner"
+                         style="background: #f8d7da;
+                                border-color: #f5c6cb;
+                                color: #721c24;
+                                margin-bottom: 1rem">
+                        <strong>Event has passed</strong> - All dates for this event are in the past. You can no longer edit dates or add new ones.
+                    </div>
+                {% else %}
+                    {% if not date_formset %}
+                        <p style="color: #666; font-size: 0.95rem; margin-bottom: 1rem;">
+                            Only upcoming event dates are shown below. Dates in the past are automatically hidden.
+                        </p>
+                    {% endif %}
+                {% endif %}
+                {{ date_formset.management_form }}
+                {% if date_formset.non_form_errors %}
+                    <ul class="errorlist">
+                        {% for error in date_formset.non_form_errors %}<li>{{ error }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+                {% for date_form in date_formset %}
+                    {% if date_form.instance.pk %}{{ date_form.id }}{% endif %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="id_dates-{{ forloop.counter0 }}-start_date">
+                                Starts <span class="required">*</span>
+                            </label>
+                            <input type="datetime-local"
+                                   name="dates-{{ forloop.counter0 }}-start_date"
+                                   id="id_dates-{{ forloop.counter0 }}-start_date"
+                                   value="{{ date_form.start_date.value|date:'Y-m-d\TH:i'|default:'' }}"
+                                   required>
+                            {% if date_form.start_date.errors %}
+                                <ul class="errorlist">
+                                    {% for error in date_form.start_date.errors %}<li>{{ error }}</li>{% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_dates-{{ forloop.counter0 }}-end_date">
+                                Ends <span class="required">*</span>
+                            </label>
+                            <input type="datetime-local"
+                                   name="dates-{{ forloop.counter0 }}-end_date"
+                                   id="id_dates-{{ forloop.counter0 }}-end_date"
+                                   value="{{ date_form.end_date.value|date:'Y-m-d\TH:i'|default:'' }}"
+                                   required>
+                            {% if date_form.end_date.errors %}
+                                <ul class="errorlist">
+                                    {% for error in date_form.end_date.errors %}<li>{{ error }}</li>{% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% for error in date_form.non_field_errors %}
+                                <ul class="errorlist">
+                                    <li>{{ error }}</li>
+                                </ul>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% empty %}
+                    {% if not event_is_past %}<p style="color: #666; font-size: 0.95rem;">No upcoming dates. Add one below.</p>{% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="form-section">
+                <h2 class="form-section-title">Banner Image</h2>
+                {{ image_formset.management_form }}
+                {% for image_form in image_formset %}
+                    {% if forloop.first %}
+                        {% if image_form.instance.pk %}{{ image_form.id }}{% endif %}
+                        <input type="hidden" name="images-0-image_type" value="banner">
+                        {% if image_form.instance.pk and image_form.instance.image %}
+                            <div class="current-image">✓ Current: {{ image_form.instance.image.name|cut:"events/" }}</div>
+                        {% endif %}
+                        <div class="form-group">
+                            <div class="image-upload-area" id="upload-area">
+                                <input type="file"
+                                       name="images-0-image"
+                                       id="id_images-0-image"
+                                       accept="image/*">
+                                <span class="upload-label">
+                                    <svg width="32"
+                                         height="32"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="#999"
+                                         stroke-width="1.5">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="17 8 12 3 7 8" />
+                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                    </svg>
+                                    <span id="upload-text">
+                                        {% if image_form.instance.pk %}
+                                            Replace banner image
+                                        {% else %}
+                                            Click to upload banner image
+                                        {% endif %}
+                                    </span>
+                                </span>
+                            </div>
+                            <span class="helptext">Recommended size: 1200x630px</span>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Save Changes</button>
+                <a href="{% url 'event_detail' slug=event.slug %}" class="btn-back">← Back to event</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const startDateInput = document.getElementById('id_dates-0-start_date');
+            const endDateInput = document.getElementById('id_dates-0-end_date');
+            const capacityInput = document.getElementById('id_capacity');
+            const priceInput = document.getElementById('id_ticket_price');
+
+            function showError(input, message) {
+                clearError(input);
+                const errorList = document.createElement('ul');
+                errorList.className = 'errorlist client-error';
+                errorList.innerHTML = '<li>' + message + '</li>';
+                input.parentNode.appendChild(errorList);
+                input.style.borderColor = '#dc3545';
+            }
+
+            function clearError(input) {
+                const existing = input.parentNode.querySelector('.client-error');
+                if (existing) existing.remove();
+                input.style.borderColor = '';
+            }
+
+            startDateInput.addEventListener('change', function() {
+                if (this.value) {
+                    endDateInput.setAttribute('min', this.value);
+                }
+            });
+
+            endDateInput.addEventListener('change', function() {
+                clearError(this);
+                if (startDateInput.value && this.value) {
+                    const start = new Date(startDateInput.value);
+                    const end = new Date(this.value);
+                    if (end <= start) {
+                        showError(this, 'End date must be after start date.');
+                    }
+                }
+            });
+
+            capacityInput.addEventListener('input', function() {
+                clearError(this);
+                const val = this.value;
+                if (val && (!Number.isInteger(Number(val)) || Number(val) < 0)) {
+                    showError(this, 'Capacity must be a non-negative whole number.');
+                }
+            });
+
+            priceInput.addEventListener('input', function() {
+                clearError(this);
+                if (this.value && Number(this.value) < 0) {
+                    showError(this, 'Price cannot be negative.');
+                }
+            });
+
+            const fileInput = document.getElementById('id_images-0-image');
+            const uploadArea = document.getElementById('upload-area');
+            const uploadText = document.getElementById('upload-text');
+
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    uploadText.innerHTML = '<span class="file-name">' + this.files[0].name + '</span>';
+                    uploadArea.classList.add('has-file');
+                } else {
+                    uploadText.textContent = '{% if image_form.instance.pk %}Replace banner image{% else %}Click to upload banner image{% endif %}';
+                    uploadArea.classList.remove('has-file');
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                let hasError = false;
+
+                if (startDateInput.value && endDateInput.value) {
+                    const start = new Date(startDateInput.value);
+                    const end = new Date(endDateInput.value);
+                    if (end <= start) {
+                        showError(endDateInput, 'End date must be after start date.');
+                        hasError = true;
+                    }
+                }
+
+                const capacity = capacityInput.value;
+                if (capacity && (!Number.isInteger(Number(capacity)) || Number(capacity) < 0)) {
+                    showError(capacityInput, 'Capacity must be a non-negative whole number.');
+                    hasError = true;
+                }
+
+                if (priceInput.value && Number(priceInput.value) < 0) {
+                    showError(priceInput, 'Price cannot be negative.');
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+{% endblock extra_js %}

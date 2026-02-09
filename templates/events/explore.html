@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+.explore-header {
+    max-width: 78rem;
+    margin: 0 auto;
+    padding: 2rem 32px;
+}
+
+.explore-header h1 {
+    margin-top: 0;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+}
+
+.search-form {
+    background: white;
+    margin-bottom: 1.5rem;
+}
+
+.search-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.search-row input[type="text"],
+.search-row select {
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    background: white;
+}
+
+.search-row input:focus,
+.search-row select:focus {
+    border-color: #ff4a22;
+    box-shadow: 0 0 0 3px rgba(255, 74, 34, 0.1);
+    outline: none;
+}
+
+.search-row button {
+    padding: 12px 28px;
+    background-color: #ff4a22;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.search-row button:hover {
+    background-color: #e63f1c;
+}
+
+.filter-inline {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-inline label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    color: #333;
+    cursor: pointer;
+}
+
+.filter-inline label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: #333;
+    cursor: pointer;
+    user-select: none;
+}
+
+.filter-inline input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #ff4a22;
+    cursor: pointer;
+}
+
+.filter-chips {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.filter-chip {
+    background-color: #fff0e6;
+    border: 1px solid #ffe0cc;
+    color: #8b3a1a;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-chip a {
+    text-decoration: none;
+    font-weight: 600;
+    color: #8b3a1a;
+}
+
+.event-wrapper {
+    margin: 30px 0;
+}
+
+.event-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.event-item {
+    background-color: white;
+    padding: 1.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    flex: 1 1 400px;
+    max-width: 400px;
+}
+
+.event-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.event-location,
+.event-date,
+.event-price,
+.event-desc {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.4rem;
+}
+
+.cta-button-event-list {
+    display: inline-block;
+    background-color: #ff4a22;
+    color: #fff;
+    padding: 9px 18px;
+    border-radius: 6px;
+    margin-top: 0.8rem;
+    text-decoration: none;
+}
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+
+<div class="explore-header">
+
+    <h1>Explore Events</h1>
+
+    <div class="search-form">
+
+        <form method="get" action="{% url 'explore' %}">
+
+            <div class="search-row">
+                <input type="text"
+                       name="q"
+                       placeholder="Search events or locations..."
+                       value="{{ request.GET.q }}">
+
+                <button type="submit">Search</button>
+            </div>
+
+            <div class="filter-inline">
+
+                <select name="category" onchange="this.form.submit()">
+                    <option value="">All categories</option>
+
+                    {% for category in categories %}
+                        <option value="{{ category.slug }}"
+                                {% if request.GET.category == category.slug %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label>
+                    <input type="checkbox"
+                           name="free"
+                           onchange="this.form.submit()"
+                           {% if request.GET.free %}checked{% endif %}>
+                    Free
+                </label>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    {% if request.GET.q or request.GET.category or request.GET.free %}
+    <div class="filter-chips">
+
+        {% if request.GET.q %}
+        <span class="filter-chip">
+            Search: {{ request.GET.q }}
+            <a href="?{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}{% if request.GET.free %}free=on{% endif %}">×</a>
+        </span>
+        {% endif %}
+
+        {% if request.GET.category %}
+        <span class="filter-chip">
+            Category: {{ request.GET.category }}
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.free %}free=on{% endif %}">×</a>
+        </span>
+        {% endif %}
+
+        {% if request.GET.free %}
+        <span class="filter-chip">
+            Free
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}{% endif %}">×</a>
+        </span>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+</div>
+
+<div class="event-wrapper">
+    <div class="event-container">
+
+        {% for event in events %}
+
+        <div class="event-item">
+
+            {% if event.primary_image %}
+                <div class="event-image">
+                    <img src="{{ event.primary_image.image.url }}" alt="{{ event.title }}" style="width:100%;height:180px;object-fit:cover;border-radius:6px;margin-bottom:0.75rem;" />
+                </div>
+            {% endif %}
+
+            <h3 class="event-title">{{ event.title }}</h3>
+
+            <p class="event-location">{{ event.location }}</p>
+
+            {% if event.dates.first %}
+            <p class="event-date">
+                {{ event.dates.first.start_date|date:"M d, Y" }}
+            </p>
+            {% endif %}
+
+            <p class="event-price">
+                {% if event.ticket_price and event.ticket_price > 0 %}
+                    Rs. {{ event.ticket_price }}
+                {% else %}
+                    Free
+                {% endif %}
+            </p>
+
+            <p class="event-desc">
+                {{ event.description|truncatewords:20 }}
+            </p>
+
+            {% if event.slug %}
+            <a href="{% url 'event_detail' slug=event.slug %}"
+               class="cta-button-event-list">
+               View Details
+            </a>
+            {% endif %}
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-state">
+            <h2>No events found</h2>
+            <p>Try adjusting your filters.</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock content %}
