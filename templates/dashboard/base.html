@@ -1,0 +1,388 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description"
+              content="Dashboard - Manage your events on Chautari">
+        <link rel="icon"
+              type="image/x-icon"
+              href="{% static 'images/favicon.ico' %}"
+              sizes="any">
+        <title>
+            {% block title %}
+                Dashboard
+            {% endblock title %}
+        </title>
+        <link rel="stylesheet" href="{% static 'css/default.css' %}">
+        <link rel="stylesheet" href="{% static 'css/components.css' %}">
+        <style>
+            body.dashboard-body {
+                margin: 0;
+                display: flex;
+                min-height: 100vh;
+            }
+
+            .dashboard-container {
+                display: flex;
+                width: 100%;
+            }
+
+            .sidebar {
+                width: 300px;
+                min-height: 100vh;
+                background-color: #ffffff;
+                display: flex;
+                flex-direction: column;
+                padding: 20px;
+                border-right: #d8d8d8 solid 1px;
+                position: sticky;
+                top: 0;
+            }
+
+            .sidebar .logo {
+                display: flex;
+                align-items: center;
+                font-size: 24px;
+                margin-top: 10px;
+                margin-left: 10px;
+            }
+
+            .sidebar .logo a {
+                text-decoration: none;
+                color: #000000;
+                display: flex;
+                align-items: center;
+            }
+
+            .sidebar .logo svg {
+                margin-right: 10px;
+                vertical-align: bottom;
+            }
+
+            .sidebar .logo-text {
+                font-weight: 700;
+            }
+
+            .sidebar hr {
+                border: 0.1px solid #e8e8e8;
+                margin: 15px 0 20px 0;
+            }
+
+            .nav-items {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .nav-items li {
+                margin-bottom: 15px;
+            }
+
+            .nav-items li a {
+                color: #5b5b5b;
+                font-weight: 600;
+                text-decoration: none;
+                font-size: 16px;
+                padding: 10px;
+                display: block;
+            }
+
+            .nav-items li.active a {
+                background-color: #eee;
+                border-radius: 8px;
+                color: #333333;
+            }
+
+            .nav-items li a:hover {
+                background-color: #f5f5f5;
+                border-radius: 8px;
+            }
+
+            .nav-icon {
+                vertical-align: middle;
+                margin-bottom: 5px;
+                margin-right: 0.5rem;
+            }
+
+            .main-content {
+                flex: 1;
+                padding: 20px 40px;
+                background-color: #fafafa;
+            }
+
+            .main-content h1 {
+                text-align: left;
+                font-size: 3rem;
+                margin-top: 20px;
+                color: #ff4a22;
+            }
+
+            .dashboard-main {
+                max-width: 78rem;
+                margin: 0 auto;
+                padding: 2rem 32px;
+            }
+
+            .dashboard-main h1 {
+                margin-top: 0;
+                font-size: 2rem;
+                margin-bottom: 1rem;
+                text-align: left;
+            }
+
+            .dashboard-nav {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 2rem;
+                border-bottom: 1px solid #f0f0f0;
+                padding-bottom: 1rem;
+            }
+
+            .dashboard-nav a {
+                padding: 8px 16px;
+                border-radius: 20px;
+                color: #171717;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .dashboard-nav a:hover {
+                background-color: #f0f0f0;
+            }
+
+            .dashboard-nav a.active {
+                background-color: #ff4a22;
+                color: white;
+            }
+
+            .dashboard-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                background: #fafafa;
+                padding: 1.5rem;
+                border-radius: 12px;
+                border: 1px solid #ddd;
+            }
+
+            .stat-card h3 {
+                color: #666;
+                font-size: 0.9rem;
+                margin: 0 0 0.5rem 0;
+                font-weight: 500;
+            }
+
+            .stat-card .stat-value {
+                font-size: 2rem;
+                font-weight: 700;
+                color: #171717;
+            }
+
+            .stat-card .stat-value.highlight {
+                color: #ff4a22;
+            }
+
+            .data-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                text-align: left;
+                padding: 12px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .data-table th {
+                font-weight: 600;
+                color: #666;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+            }
+
+            .data-table tr:hover {
+                background-color: #fafafa;
+            }
+
+            .data-table .status-badge {
+                display: inline-block;
+                padding: 4px 10px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: 500;
+            }
+
+            .status-badge.confirmed {
+                background-color: #dcfce7;
+                color: #166534;
+            }
+
+            .status-badge.pending {
+                background-color: #fef3c7;
+                color: #92400e;
+            }
+
+            .status-badge.cancelled {
+                background-color: #fee2e2;
+                color: #991b1b;
+            }
+
+            .dashboard-empty {
+                text-align: center;
+                padding: 4rem 2rem;
+                color: #666;
+            }
+
+            .dashboard-empty h2 {
+                margin-bottom: 1rem;
+            }
+
+            .quick-actions {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .quick-actions a {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            @media (max-width: 768px) {
+                .data-table {
+                    font-size: 0.9rem;
+                }
+
+                .data-table th,
+                .data-table td {
+                    padding: 8px;
+                }
+            }
+        </style>
+        {% block extra_css %}
+        {% endblock extra_css %}
+    </head>
+    <body>
+        <div class="dashboard-container">
+            <div class="sidebar">
+                <div class="logo">
+                    <a href="{% url 'home' %}">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="32"
+                             height="32"
+                             viewBox="0 0 256 256">
+                            <path fill="currentColor" d="M128 187.85a72 72 0 0 0 8 4.62V232a8 8 0 0 1-16 0v-39.53a72 72 0 0 0 8-4.62m70.1-125.26a76 76 0 0 0-140.2 0A71.71 71.71 0 0 0 16 127.8C15.9 166 48 199 86.14 200a72.2 72.2 0 0 0 33.86-7.53v-35.53l-43.58-21.78a8 8 0 1 1 7.16-14.32L120 139.06V88a8 8 0 0 1 16 0v27.06l36.42-18.22a8 8 0 1 1 7.16 14.32L136 132.94v59.53a72.2 72.2 0 0 0 32 7.53h1.82c38.18-1 70.29-34 70.18-72.2a71.71 71.71 0 0 0-41.9-65.21" />
+                        </svg>
+                        <span class="logo-text">Chautari</span>
+                    </a>
+                </div>
+                <hr>
+                <ul class="nav-items">
+                    <li class="{% if active_tab == 'dashboard' %}active{% endif %}">
+                        <a href="{% url 'dashboard' %}">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="20"
+                                 height="20"
+                                 class="nav-icon"
+                                 viewBox="0 0 20 20">
+                                <g fill="currentColor">
+                                <g opacity=".2">
+                                <path fill-rule="evenodd" d="M8 4.351c0-.47.414-.851.926-.851h6.148c.512 0 .926.381.926.851V7.65c0 .47-.414.851-.926.851H8.926C8.414 8.5 8 8.119 8 7.649V4.35Z" clip-rule="evenodd" />
+                                <path d="M6.462 19h10.576c.532 0 .962-.448.962-1V6c0-.552-.43-1-.962-1H6.462C5.93 5 5.5 5.448 5.5 6v12c0 .552.43 1 .962 1Z" />
+                                </g>
+                                <path fill-rule="evenodd" d="M6.175 2.5a.5.5 0 0 1 .5-.5h6.643a.5.5 0 0 1 .5.5v3.875a.5.5 0 0 1-.5.5H6.675a.5.5 0 0 1-.5-.5V2.5Zm1 .5v2.875h5.643V3H7.175Z" clip-rule="evenodd" />
+                                <path d="M4.5 5v12h11V5h-2V4h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h2v1h-2Z" />
+                                </g>
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    {% if not user.is_site_admin %}
+                        <li class="{% if active_tab == 'bookings' %}active{% endif %}">
+                            <a href="{% url 'dashboard_bookings' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     class="nav-icon"
+                                     viewBox="0 0 20 20">
+                                    <g fill="currentColor">
+                                    <path d="m11 5.79l7.314-1.27a1.5 1.5 0 0 1 .242-.02c.801 0 1.444.664 1.444 1.475v9.786c0 .72-.511 1.34-1.213 1.456l-7.705 1.276a.499.499 0 0 1-.18-.002l-7.647-1.267A1.5 1.5 0 0 1 2 15.744V6.011a1.5 1.5 0 0 1 1.756-1.478L11 5.79Z" opacity=".2" />
+                                    <path fill-rule="evenodd" d="M10.08 4.304L2.244 3.019A1.5 1.5 0 0 0 .5 4.5v9.738a1.5 1.5 0 0 0 1.268 1.482l8.155 1.275a.5.5 0 0 0 .577-.494V4.797a.5.5 0 0 0-.42-.493Zm-8-.298L9.5 5.222v10.694L1.923 14.73a.5.5 0 0 1-.423-.493V4.5a.5.5 0 0 1 .58-.494Z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd" d="M18 3a1.5 1.5 0 0 0-.243.02L9.92 4.303a.5.5 0 0 0-.419.493V16.5a.5.5 0 0 0 .577.494l8.155-1.275a1.5 1.5 0 0 0 1.268-1.482V4.5A1.5 1.5 0 0 0 18 3Zm.077 11.73L10.5 15.916V5.222l7.42-1.216a.501.501 0 0 1 .58.494v9.737a.5.5 0 0 1-.423.493Z" clip-rule="evenodd" />
+                                    </g>
+                                </svg>
+                                Bookings
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if not user.is_site_admin %}
+                        <li class="{% if active_tab == 'sales' %}active{% endif %}">
+                            <a href="{% url 'dashboard_sales' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     class="nav-icon"
+                                     viewBox="0 0 20 20">
+                                    <g fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.219 2.75H4.2a.75.75 0 0 1 0-1.5h1.603a.75.75 0 0 1 .727.566l1.502 5.937a1.998 1.998 0 0 1 .974-.253h7.989a2.012 2.012 0 0 1 1.955 2.468l-.783 3.461A2.009 2.009 0 0 1 16.21 15H9.79a2.008 2.008 0 0 1-1.956-1.57L7.05 9.967a2.058 2.058 0 0 1-.027-.145a.754.754 0 0 1-.05-.14L5.219 2.75ZM9.25 18.5a1.75 1.75 0 1 0 0-3.5a1.75 1.75 0 0 0 0 3.5Zm7 0a1.75 1.75 0 1 0 0-3.5a1.75 1.75 0 0 0 0 3.5Z" clip-rule="evenodd" opacity=".2" />
+                                    <path d="M3.712 2.5H2.5a.5.5 0 0 1 0-1h1.603a.5.5 0 0 1 .485.379l1.897 7.6a.5.5 0 0 1-.97.242L3.712 2.5Z" />
+                                    <path fill-rule="evenodd" d="M15.495 7.5h-7.99c-.15 0-.3.017-.447.05A2.02 2.02 0 0 0 5.55 9.969l.783 3.461A2.008 2.008 0 0 0 8.29 15h6.422a2.01 2.01 0 0 0 1.956-1.57l.783-3.462A2.012 2.012 0 0 0 15.495 7.5ZM7.283 8.525a.992.992 0 0 1 .223-.025h7.989a1.013 1.013 0 0 1 .98 1.247l-.784 3.462a1.009 1.009 0 0 1-.98.791H8.29c-.468 0-.875-.328-.98-.791l-.783-3.462a1.02 1.02 0 0 1 .757-1.222Z" clip-rule="evenodd" />
+                                    <path d="M17 16.75a1.75 1.75 0 1 1-3.5 0a1.75 1.75 0 0 1 3.5 0Zm-7 0a1.75 1.75 0 1 1-3.5 0a1.75 1.75 0 0 1 3.5 0Z" />
+                                    </g>
+                                </svg>
+                                Sales
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if user.is_site_admin %}
+                        <li class="{% if active_tab == 'moderation' %}active{% endif %}">
+                            <a href="{% url 'dashboard_moderation' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     class="nav-icon"
+                                     viewBox="0 0 20 20">
+                                    <g fill="currentColor">
+                                    <path d="m8 4.97l.954-.396a4 4 0 0 1 2.908.058l1.482.613a4 4 0 0 0 2.693.13l.893-.271A1.604 1.604 0 0 1 19 6.638V10.7a3.22 3.22 0 0 1-1.66 2.817l-.734.407a4 4 0 0 1-3.88 0l-.453-.251a4 4 0 0 0-3.88 0l-.226.126c-.055.03-.11.056-.167.079V19a1 1 0 1 1-2 0V5a1 1 0 0 1 1-1c.81 0 1 .97 1 .97Z" opacity=".2" />
+                                    <path fill-rule="evenodd" d="m6.804 2.632l-.637.264A3.507 3.507 0 0 0 4 6.137v4.386a1.46 1.46 0 0 0 2.167 1.276l.227-.126a4 4 0 0 1 3.88 0l.453.251a4 4 0 0 0 3.88 0l.734-.407A3.222 3.222 0 0 0 17 8.7V4.638a1.605 1.605 0 0 0-2.07-1.534l-.893.272a4 4 0 0 1-2.694-.13l-1.48-.614a4 4 0 0 0-3.059 0ZM5 6.137c0-1.014.611-1.929 1.549-2.317l.638-.264a3 3 0 0 1 2.293 0l1.481.613a5 5 0 0 0 3.367.163l.893-.271a.604.604 0 0 1 .779.577V8.7c0 .807-.438 1.551-1.144 1.943l-.735.407a3 3 0 0 1-2.91 0l-.453-.252a5 5 0 0 0-4.85 0l-.226.126A.46.46 0 0 1 5 10.523V6.137Z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd" d="M5 2a1 1 0 0 1 1 1v14a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Z" clip-rule="evenodd" />
+                                    </g>
+                                </svg>
+                                Moderation
+                            </a>
+                        </li>
+                        <li class="{% if active_tab == 'posts' %}active{% endif %}">
+                            <a href="{% url 'dashboard_posts' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     class="nav-icon"
+                                     viewBox="0 0 20 20">
+                                    <g fill="currentColor">
+                                    <path d="M12.675 15.137a.675.675 0 1 1-1.35 0a.675.675 0 0 1 1.35 0Z" />
+                                    <path fill-rule="evenodd" d="M12 14.963a.175.175 0 1 0 0 .35a.175.175 0 0 0 0-.35Zm-1.175.175a1.175 1.175 0 1 1 2.35 0a1.175 1.175 0 0 1-2.35 0Z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd" d="M6 3.5A2.5 2.5 0 0 1 8.5 1h7A2.5 2.5 0 0 1 18 3.5v13a2.5 2.5 0 0 1-2.5 2.5H8a2 2 0 0 1-2-2v-1.5a.5.5 0 0 1 1 0V17a1 1 0 0 0 1 1h7.5a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 15.5 2h-7A1.5 1.5 0 0 0 7 3.5v3.25a.5.5 0 0 1-1 0V3.5Z" clip-rule="evenodd" />
+                                    </g>
+                                </svg>
+                                Manage Posts
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="main-content">
+                {% block dashboard_content %}
+                {% endblock dashboard_content %}
+            </div>
+        </div>
+    </body>
+</html>

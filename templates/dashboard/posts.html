@@ -1,0 +1,123 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block title %}
+    Manage Posts
+{% endblock title %}
+{% block extra_css %}
+    <style>
+        .posts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .new-post-btn {
+            padding: 12px 24px;
+            background-color: #ff4a22;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .posts-list {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .post-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .post-row:last-child {
+            border-bottom: none;
+        }
+
+        .post-info h4 {
+            margin: 0 0 4px 0;
+            color: #333;
+        }
+
+        .post-info p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .post-actions a {
+            color: #ff4a22;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .status-published {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .status-draft {
+            background-color: #e2e3e5;
+            color: #383d41;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+    </style>
+{% endblock extra_css %}
+{% block dashboard_content %}
+    <h1>Manage Posts</h1>
+    <div class="posts-header">
+        <p class="text-muted">Manage all events and posts on the platform</p>
+        <a href="{% url 'event_create' %}" class="new-post-btn">+ New Event</a>
+    </div>
+    <div class="posts-list">
+        {% if all_events %}
+            {% for event in all_events %}
+                <div class="post-row">
+                    <div class="post-info">
+                        <h4>{{ event.title }}</h4>
+                        <p>By {{ event.organizer.display_name }} • {{ event.created_at|date:"M d, Y" }}</p>
+                    </div>
+                    <div class="post-actions">
+                        {% if event.is_published %}
+                            <span class="status-published">Published</span>
+                        {% else %}
+                            <span class="status-draft">Draft</span>
+                        {% endif %}
+                        <a href="{% url 'event_detail' slug=event.slug %}">View</a>
+                        <a href="{% url 'event_update' slug=event.slug %}">Edit</a>
+                        <a href="{% url 'event_delete' slug=event.slug %}" class="text-danger">Delete</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <h3>No posts yet</h3>
+                <p>Events created on the platform will appear here.</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock dashboard_content %}

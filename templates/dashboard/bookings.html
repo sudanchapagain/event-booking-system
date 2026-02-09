@@ -1,0 +1,119 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block title %}
+    Event Bookings
+{% endblock title %}
+{% block extra_css %}
+    <style>
+        .bookings-table {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .bookings-table th {
+            background-color: #f5f5f5;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .bookings-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .bookings-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bookings-table tr:hover td {
+            background-color: #fafafa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+    </style>
+{% endblock extra_css %}
+{% block dashboard_content %}
+    <h1>Event Bookings</h1>
+    {% if bookings %}
+        <table class="bookings-table">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Attendee</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                    <tr>
+                        <td>
+                            <strong>{{ booking.event.title }}</strong>
+                        </td>
+                        <td>{{ booking.user.display_name }}</td>
+                        <td>{{ booking.user.email }}</td>
+                        <td>{{ booking.user.phone|default:"-" }}</td>
+                        <td>
+                            <span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                        </td>
+                        <td>{{ booking.created_at|date:"M d, Y" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 24 24"
+                 fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+            </svg>
+            <h3>No bookings yet</h3>
+            <p>When attendees book your events, they'll appear here.</p>
+        </div>
+    {% endif %}
+{% endblock dashboard_content %}
