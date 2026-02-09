@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${PG_NAME:-chautari}
+      POSTGRES_USER: ${PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-postgres}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env.example
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      PG_NAME: ${PG_NAME:-chautari}
+      PG_USER: ${PG_USER:-postgres}
+      PG_PASSWORD: ${PG_PASSWORD:-postgres}
+      DEMO: 'True'
+    volumes:
+      - .:/app:cached
+      - static_volume:/app/staticfiles
+    depends_on:
+      - db
+    expose:
+      - "8000"
+
+  nginx:
+    image: nginx:stable
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/app/staticfiles:ro
+    depends_on:
+      - web
+
+volumes:
+  db_data:
+  static_volume:
