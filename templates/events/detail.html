@@ -155,9 +155,14 @@
         <h1>{{ event.title }}</h1>
         <div class="event-meta">
             <p>Location: {{ event.location }}</p>
-            <p>Organized by:
+            <p>
+                Organized by:
                 {% if event.organizer %}
-                    {% if event.organizer.first_name %}{{ event.organizer.first_name }}{% else %}{{ event.organizer.email }}{% endif %}
+                    {% if event.organizer.first_name %}
+                        {{ event.organizer.first_name }}
+                    {% else %}
+                        {{ event.organizer.email }}
+                    {% endif %}
                 {% else %}
                     <em>Unknown</em>
                 {% endif %}

@@ -74,9 +74,9 @@ class BookEventView(LoginRequiredMixin, View):
             messages.warning(request, "You have already booked this event.")
             return redirect("event_detail", slug=event.slug)
         if result.get("error"):
-            messages.error(request, result["error"]) # type: ignore
+            messages.error(request, result["error"])  # type: ignore
             return redirect("event_detail", slug=event.slug)
-        return HttpResponseRedirect(result["payment_url"]) # type: ignore
+        return HttpResponseRedirect(result["payment_url"])  # type: ignore
 
 
 class PaymentValidateView(LoginRequiredMixin, View):
@@ -89,9 +89,13 @@ class PaymentValidateView(LoginRequiredMixin, View):
             messages.error(request, "Invalid payment response.")
             return redirect("explore")
 
-        result = validate_payment(request, pidx, purchase_order_id, request.user, status=status)
+        result = validate_payment(
+            request, pidx, purchase_order_id, request.user, status=status
+        )
         if result.get("ok"):
-            messages.success(request, "Payment successful! You are registered for the event.")
+            messages.success(
+                request, "Payment successful! You are registered for the event."
+            )
         else:
             messages.error(request, result.get("error", "Payment verification failed."))
 
