@@ -82,6 +82,7 @@ class EventListView(ListView):
                     )
                 )
                 .filter(similarity__gte=0.12)
+                .distinct()
                 .order_by("-similarity")
             )
 
@@ -90,7 +91,12 @@ class EventListView(ListView):
             location = location.strip()
             queryset = queryset.filter(location__icontains=location)
 
-        categories = self.request.GET.getlist("category")
+        categories = [c for c in self.request.GET.getlist("category") if c.strip()]
+        if not categories:
+            single_cat = self.request.GET.get("category")
+            if single_cat and single_cat.strip():
+                categories = [single_cat.strip()]
+
         if categories:
             slug_filters = []
             id_filters = []
