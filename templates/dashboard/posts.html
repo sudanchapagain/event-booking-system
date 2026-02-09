@@ -102,7 +102,7 @@
                         <p>By {{ event.organizer.display_name }} • {{ event.created_at|date:"M d, Y" }}</p>
                     </div>
                     <div class="post-actions">
-                        {% if event.is_published %}
+                        {% if event.is_approved %}
                             <span class="status-published">Published</span>
                         {% else %}
                             <span class="status-draft">Draft</span>
