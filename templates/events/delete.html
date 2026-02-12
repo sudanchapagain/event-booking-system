@@ -13,6 +13,10 @@
             font-size: 1.5rem;
             margin-bottom: 1.5rem;
         }
+
+        form > span {
+            margin-left: 1rem;
+        }
     </style>
 {% endblock extra_css %}
 {% block content %}
@@ -26,9 +30,9 @@
         <form method="post">
             {% csrf_token %}
             <button type="submit" class="danger-button-solid">Yes, Delete Event</button>
+            <span>
+                <a href="{% url 'event_detail' slug=event.slug %}" class="text-muted">Cancel</a>
+            </span>
         </form>
-        <p class="mt-2">
-            <a href="{% url 'event_detail' slug=event.slug %}" class="text-muted">Cancel</a>
-        </p>
     </div>
 {% endblock content %}
