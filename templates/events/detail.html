@@ -86,10 +86,11 @@
             gap: 1rem;
             flex-wrap: wrap;
             margin: 1.5rem 0;
+            justify-content: center;
         }
 
         .event-images img {
-            max-width: 200px;
+            max-width: 700px;
             border-radius: 8px;
         }
 
@@ -152,6 +153,12 @@
             </div>
         {% endif %}
 
+        {% if event.images.exists %}
+            <div class="event-images">
+                {% for image in event.images.all %}<img src="{{ image.image.url }}" alt="Event image">{% endfor %}
+            </div>
+        {% endif %}
+
         <h1>{{ event.title }}</h1>
         <div class="event-meta">
             <p>Location: {{ event.location }}</p>
@@ -198,12 +205,6 @@
                         </li>
                     {% endfor %}
                 </ul>
-            </div>
-        {% endif %}
-
-        {% if event.images.exists %}
-            <div class="event-images">
-                {% for image in event.images.all %}<img src="{{ image.image.url }}" alt="Event image">{% endfor %}
             </div>
         {% endif %}
 
