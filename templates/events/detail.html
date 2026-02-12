@@ -257,19 +257,21 @@
             {% endif %}
         </div>
 
-        {% if similar_events %}
-            <div class="similar-events">
-                <h2>Similar Events</h2>
-                <div class="similar-events-grid">
-                    {% for similar in similar_events %}
-                        <a href="{% url 'event_detail' slug=similar.slug %}"
-                           class="similar-event-card">
-                            <h4>{{ similar.title }}</h4>
-                            <p>{{ similar.location }}</p>
-                        </a>
-                    {% endfor %}
+        {% if event.is_approved %}
+            {% if similar_events %}
+                <div class="similar-events">
+                    <h2>Similar Events</h2>
+                    <div class="similar-events-grid">
+                        {% for similar in similar_events %}
+                            <a href="{% url 'event_detail' slug=similar.slug %}"
+                               class="similar-event-card">
+                                <h4>{{ similar.title }}</h4>
+                                <p>{{ similar.location }}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         {% endif %}
     </main>
 {% endblock content %}

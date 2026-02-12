@@ -8,6 +8,7 @@ from django.views.generic import ListView, TemplateView
 
 from apps.bookings.models import EventAttendance, TicketSale
 from apps.events.models import Event
+from apps.events.similarity import update_event_embedding
 
 
 class OrganizerRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -196,6 +197,7 @@ class ApproveEventView(AdminRequiredMixin, View):
         event = get_object_or_404(Event, id=event_id)
         event.is_approved = True
         event.save()
+        update_event_embedding(event)
         messages.success(request, f"Event '{event.title}' has been approved.")
         return redirect("dashboard_moderation")
 
