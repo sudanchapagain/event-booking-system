@@ -148,7 +148,7 @@
         min-width: 150px;
         display: none;
         z-index: 200;
-        padding-top: 8px;
+        padding: 8px 0px;
     }
 
     .header-dropdown:hover .header-dropdown-menu {
@@ -202,6 +202,28 @@
 
     .hamburger.open span:nth-child(3) {
         transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    .header-dropdown-menu form button,
+    .mobile-nav-auth form button {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: block;
+        padding: 10px 15px;
+        color: #171717;
+        text-decoration: none;
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 0.85rem;
+        width: 100%;
+        text-align: left;
+    }
+
+    .header-dropdown-menu form button:hover,
+    .mobile-nav-auth form button:hover {
+        background-color: #f0f0f0;
     }
 
     .mobile-nav {
@@ -351,7 +373,10 @@
                             <a href="{% url 'dashboard' %}">Dashboard</a>
                         {% endif %}
                         <a href="{% url 'event_create' %}">Create Event</a>
-                        <a href="{% url 'logout' %}">Log out</a>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit">Log out</button>
+                        </form>
                     </div>
                 </div>
             {% else %}
@@ -395,7 +420,10 @@
                     <a href="{% url 'dashboard' %}">Dashboard</a>
                 {% endif %}
                 <a href="{% url 'event_create' %}">Create Event</a>
-                <a href="{% url 'logout' %}">Log out</a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Log out</button>
+                </form>
             {% else %}
                 <a class="nav-button-secondary" href="{% url 'login' %}">Log in</a>
                 <a class="nav-button-primary" href="{% url 'signup' %}">Sign up today</a>
