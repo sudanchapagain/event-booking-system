@@ -7,29 +7,12 @@ from typing import Iterable
 
 
 STOP_WORDS = {
+    # generic
     "the",
     "a",
     "an",
     "and",
     "or",
-    "but",
-    "in",
-    "on",
-    "at",
-    "to",
-    "for",
-    "of",
-    "with",
-    "is",
-    "are",
-    "was",
-    "were",
-    "be",
-    "been",
-    "being",
-    "have",
-    "has",
-    "had",
     "do",
     "does",
     "did",
@@ -59,34 +42,63 @@ STOP_WORDS = {
     "where",
     "why",
     "how",
+    "but",
+    "in",
+    "on",
+    "at",
+    "to",
+    "for",
+    "of",
+    "with",
+    "is",
+    "are",
+    "was",
+    "were",
+    "be",
+    "been",
+    "being",
+    "have",
+    "has",
+    "had",
+    # common
+    "event",
+    "events",
+    "community",
+    "people",
+    "welcome",
+    "join",
+    "attend",
+    "experience",
+    "bring",
+    "friends",
+    "local",
+    "international",
+    "year",
 }
 
 
 TOKEN_RE = re.compile(r"[a-z0-9]+", re.IGNORECASE)
 
 
-def _tokenize(text: str) -> list[str]:
+def tokenize(text: str) -> list[str]:
     tokens = TOKEN_RE.findall(text.lower())
     return [t for t in tokens if t not in STOP_WORDS]
 
 
 def build_event_text(event) -> str:
-    parts = [
-        event.title or "",
-        event.description or "",
-        event.location or "",
-    ]
+    title = (event.title or "") * 3
+    categories = " ".join(cat.name for cat in event.categories.all()) * 3
+    description = event.description or ""
+    location = (event.location or "") * 1
 
-    if hasattr(event, "categories"):
-        parts.extend(cat.name for cat in event.categories.all())
-    return " ".join(parts)
+    return " ".join([title, categories, description, location])
 
 
 def build_vocabulary(texts: Iterable[str]) -> dict[str, int]:
     df: dict[str, int] = defaultdict(int)
 
     for text in texts:
-        seen = set(_tokenize(text))
+        seen = set(tokenize(text))
         for word in seen:
             df[word] += 1
 
@@ -103,7 +115,7 @@ def compute_idf(vocab: dict[str, int], doc_count: int) -> dict[str, float]:
 def text_to_vector(
     text: str, idf: dict[str, float], vocab_order: list[str]
 ) -> list[float]:
-    tokens = _tokenize(text)
+    tokens = tokenize(text)
     if not tokens:
         return [0.0] * len(vocab_order)
 
@@ -111,11 +123,11 @@ def text_to_vector(
     for t in tokens:
         tf[t] += 1
 
-    length = len(tokens)
+    total = len(tokens)
     vector: list[float] = []
 
     for word in vocab_order:
-        tf_val = tf.get(word, 0) / length
+        tf_val = tf.get(word, 0) / total
         vector.append(tf_val * idf.get(word, 0.0))
 
     return vector
@@ -148,10 +160,9 @@ def rebuild_all_embeddings() -> int:
     texts = [build_event_text(e) for e in events]
     vocab = build_vocabulary(texts)
     vocab_order = sorted(vocab.keys())
-    idf = compute_idf(vocab, len(texts))
+    idf = compute_idf(vocab, len(events))
 
-    for event in events:
-        text = build_event_text(event)
+    for event, text in zip(events, texts):
         event.embedding = text_to_vector(text, idf, vocab_order)
         event.save(update_fields=["embedding"])
 
@@ -162,42 +173,38 @@ def update_event_embedding(event) -> None:
     rebuild_all_embeddings()
 
 
-def get_similar_events(event, limit: int = 5):
+def get_similar_events(event, limit: int =5):
     from .models import Event
-    from django.db.models import Case, When
 
-    event_embedding = event.embedding
-    if not isinstance(event_embedding, list):
-        return list(
-            Event.objects.filter(is_approved=True)
-            .exclude(id=event.id)
-            .order_by("-created_at")[:limit]
-        )
-
-    others = list(
-        Event.objects.filter(
-            is_approved=True,
-            embedding__isnull=False,
-        ).exclude(id=event.id)
-    )
-
-    similarities = []
-
-    for other in others:
-        other_embedding = other.embedding
-        if not isinstance(other_embedding, list):
-            continue
-        if len(other_embedding) != len(event_embedding):
-            continue
-
-        score = cosine_similarity(event_embedding, other_embedding)
-        similarities.append((other.id, score))
-
-    similarities.sort(key=lambda x: x[1], reverse=True)
-    top_ids = [eid for eid, score in similarities[:limit] if score > 0]
-
-    if not top_ids:
+    if not isinstance(event.embedding, list):
         return []
 
-    preserved = Case(*[When(id=eid, then=pos) for pos, eid in enumerate(top_ids)])
-    return list(Event.objects.filter(id__in=top_ids).order_by(preserved))
+    candidates = (
+        Event.objects.filter(is_approved=True)
+        .exclude(id=event.id)
+        .prefetch_related("categories")
+    )
+
+    event_cats = set(event.categories.values_list("id", flat=True))
+
+    scored = []
+
+    for other in candidates:
+        if not isinstance(other.embedding, list):
+            continue
+
+        other_cats = set(other.categories.values_list("id", flat=True))
+        if event_cats and not (event_cats & other_cats):
+            continue
+
+        if len(other.embedding) != len(event.embedding):
+            continue
+
+        score = cosine_similarity(event.embedding, other.embedding)
+
+        if score > 0.15:
+            scored.append((other, score))
+
+    scored.sort(key=lambda x: x[1], reverse=True)
+
+    return [e for e, _ in scored[:limit]]

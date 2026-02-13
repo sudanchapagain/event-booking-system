@@ -39,7 +39,7 @@ def initiate_payment(request, event, user, customer_phone):
         data = response.json()
         if "payment_url" in data:
             EventAttendance.objects.get_or_create(
-                user=user, event=event, defaults={"status": "pending"}
+                user=user, event=event, defaults={"status": ""}
             )
             request.session["checkout_phone"] = customer_phone
             return {"payment_url": data["payment_url"]}

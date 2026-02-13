@@ -52,7 +52,6 @@ class DashboardView(OrganizerRequiredMixin, TemplateView):
             event__in=events, status="confirmed"
         ).count()
 
-        # Optimize recent_events with prefetch to avoid N+1 queries
         confirmed_attendances = Prefetch(
             "attendances", EventAttendance.objects.filter(status="confirmed")
         )
