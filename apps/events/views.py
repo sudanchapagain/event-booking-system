@@ -325,7 +325,7 @@ class EventUpdateView(EventOwnerMixin, UpdateView):
             date_formset.save()
             image_formset.save()
             update_event_embedding(self.object)
-            
+
             messages.success(self.request, "Event updated successfully!")
             return redirect("event_detail", slug=self.object.slug)
         return self.render_to_response(self.get_context_data(form=form))

@@ -269,11 +269,14 @@
                     <h2>Similar Events</h2>
                     <div class="similar-events-grid">
                         {% for similar in similar_events %}
-                            <a href="{% url 'event_detail' slug=similar.slug %}" class="similar-event-card">
+                            <a href="{% url 'event_detail' slug=similar.slug %}"
+                               class="similar-event-card">
                                 {% if similar.images.exists %}
-                                        {% for image in similar.images.all %}
-                                            <img class="similar-image" src="{{ image.image.url }}" alt="Similar Event image">
-                                        {% endfor %}
+                                    {% for image in similar.images.all %}
+                                        <img class="similar-image"
+                                             src="{{ image.image.url }}"
+                                             alt="Similar Event image">
+                                    {% endfor %}
                                 {% endif %}
                                 <h4>{{ similar.title }}</h4>
                                 <p>{{ similar.location }}</p>

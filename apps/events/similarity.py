@@ -173,7 +173,7 @@ def update_event_embedding(event) -> None:
     rebuild_all_embeddings()
 
 
-def get_similar_events(event, limit: int =5):
+def get_similar_events(event, limit: int = 5):
     from .models import Event
 
     if not isinstance(event.embedding, list):
