@@ -197,6 +197,7 @@ class ApproveEventView(AdminRequiredMixin, View):
         event.is_approved = True
         event.save()
         update_event_embedding(event)
+
         messages.success(request, f"Event '{event.title}' has been approved.")
         return redirect("dashboard_moderation")
 
